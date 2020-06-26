@@ -1,0 +1,11 @@
+{
+    "name": "build/tanti",
+    "description": "This app is only a dummy for downloading with the option require.",
+    "homepage": "https://php-download.com/",
+    "type": "project",
+    "require":
+    {
+        "tightenco/collect": "^7.12.0.0",
+        "clancats/hydrahon": "^1.1"
+    }
+}
