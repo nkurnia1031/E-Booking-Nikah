@@ -41,7 +41,7 @@
             </table>
             <div class="card-footer ">
                 <?php if (isset($Session['admin'])): ?>
-                <?php if ($Session['admin']->akses == 'Owner'): ?>
+                <?php if ($Session['admin']->akses == 'Admin'): ?>
                 <a href="?hal=KPaket&key=<?php echo $k->idpaket; ?>" class="btn-sm btn btn-outline-warning btn-rounded">Kelola</a>
                 <?php endif;?>
                 <?php if ($Session['admin']->akses == 'Pelanggan'): ?>

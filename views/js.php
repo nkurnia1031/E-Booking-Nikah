@@ -6,18 +6,22 @@
 <script src="./mine/datatables.min.js"> </script>
 <script src="./mine/simplebar.min.js"> </script>
 <script src="./mine/jQuery.print.js"> </script>
+<script src="./mine/jquery.mask.min.js"> </script>
+<script src="dist/js/lightgallery-all.min.js"> </script>
+<script src="dist/js/lightgallery-all.min.js"> </script>
 <script type="text/javascript">
 $(function() {
     $('[data-toggle="tooltip"]').tooltip()
-})
+});
+
 new WOW({
     animateClass: 'animate__animated', // default
 }).init();
 </script>
-
 <script type="text/javascript">
 var aneh;
 $(document).ready(function() {
+    $('.uang').mask("000.000.000.000.000", { reverse: true });
     <?php if ($data['link'] == 'KPesanan'): ?>
     $('#diskusi').scrollTop($('#diskusi')[0].scrollHeight);
 
@@ -57,6 +61,12 @@ $(document).ready(function() {
             }
         }
     });
+   <?php if ($data['link'] == 'Gallery'): ?>
+         $("#relative-caption").lightGallery({
+        subHtmlSelectorRelative: true
+    });
+   <?php endif;?>
+
 
 
 

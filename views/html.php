@@ -31,13 +31,11 @@
                                             </h4>
                                         </span>
                                         <?php if ($data['link'] == 'Paket'): ?>
-                                            <?php if (isset($Session['admin'])): ?>
-
-                                        <?php if ($Session['admin']->akses == 'Owner'): ?>
+                                        <?php if (isset($Session['admin'])): ?>
+                                        <?php if ($Session['admin']->akses == 'Admin'): ?>
                                         <span><a href="?hal=KPaket" class="btn btn-danger"><i class="fa fa-plus"></i> Paket</a></span>
                                         <?php endif;?>
-                                            <?php endif;?>
-
+                                        <?php endif;?>
                                         <?php endif;?>
                                     </div>
                                     <hr class="mb-3">

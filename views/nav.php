@@ -10,27 +10,51 @@
             <li class="nav-item <?php echo ($data['link'] == 'Tentang') ? 'active' : ''; ?>">
                 <a class="nav-link" href="?hal=Tentang"><i class="text-danger fa fa-store-alt"></i> Tentang Kami <span class="sr-only">(current)</span></a>
             </li>
+            <li class="nav-item dropdown <?php if (isset($data['induk'])): ?><?php echo ($data['induk'] == 'Gallery') ? 'active' : ''; ?> <?php endif;?>">
+                <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                    <i class="text-danger fa fa-photo-video"></i> Gallery <span class="sr-only">(current)</span>
+                </a>
+                <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+                    <a class="dropdown-item <?php echo ($data['link'] == 'Gallery&isi=0') ? 'active' : ''; ?>  " href="?hal=Gallery&isi=0">Baju Selayar</a>
+                    <a class="dropdown-item <?php echo ($data['link'] == 'Gallery&isi=1') ? 'active' : ''; ?> " href="?hal=Gallery&isi=1">Baju Adat</a>
+                </div>
+            </li>
             <li class="nav-item <?php echo ($data['link'] == 'Tentang') ? 'active' : ''; ?>">
                 <a class="nav-link" href="?hal=Paket"><i class="text-danger fa fa-heart"></i> Paket Penikahan <span class="sr-only">(current)</span></a>
             </li>
             <?php if (isset($Session['admin'])): ?>
+
+            <?php if ($Session['admin']->akses != 'Owner'): ?>
+
             <li class="nav-item <?php echo ($data['link'] == 'Tentang') ? 'active' : ''; ?>">
                 <a class="nav-link" href="?hal=Pesanan"><i class="text-danger fa fa-calendar-alt"></i> Data Pesanan <span class="sr-only">(current)</span></a>
             </li>
-            <?php if (isset($Session['admin'])): ?>
-            <?php if ($Session['admin']->akses == 'Owner'): ?>
+            <?php endif;?>
+
+            <?php if ($Session['admin']->akses == 'Admin'): ?>
+
             <li class="nav-item <?php echo ($data['link'] == 'PaketTambahan') ? 'active' : ''; ?>">
                 <a class="nav-link" href="?hal=PaketTambahan"><i class="text-danger fa fa-cart-plus"></i> Data Paket Tambahan <span class="sr-only">(current)</span></a>
             </li>
             <li class="nav-item <?php echo ($data['link'] == 'Pelanggan') ? 'active' : ''; ?>">
                 <a class="nav-link" href="?hal=Pelanggan"><i class="text-danger fa fa-users"></i> Data Pelanggan <span class="sr-only">(current)</span></a>
             </li>
-            <li class="nav-item <?php echo ($data['link'] == 'LPemesanan') ? 'active' : ''; ?>">
-                <a class="nav-link" href="?hal=LPemesanan"><i class="text-danger fa fa-print"></i> Laporan Pemesanan <span class="sr-only">(current)</span></a>
+            <?php endif;?>
+            <?php if ($Session['admin']->akses == 'Admin' || $Session['admin']->akses == 'Owner'): ?>
+
+            <li class="nav-item dropdown <?php if (isset($data['link'])): ?><?php echo ($data['link'] == 'LPemesanan') ? 'active' : ''; ?> <?php endif;?>">
+                <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                    <i class="text-danger fa fa-print"></i> Laporan <span class="sr-only">(current)</span>
+                </a>
+                <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+                    <a class="dropdown-item  " href="?hal=LPemesanan">Pemesanan Keseluruhan</a>
+                    <a class="dropdown-item " href="?hal=LPemesanan&jenis=Perorang">Pemesanan Per Pelanggan</a>
+                </div>
             </li>
             <?php endif;?>
             <?php endif;?>
-            <?php endif;?>
+
+
         </ul>
         <?php if (isset($Session['admin'])): ?>
         <ul class="navbar-nav ml-auto">
@@ -40,7 +64,6 @@
                 </a>
                 <div class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
                     <a class="dropdown-item" href="?hal=Akun"><i class="text-danger fa fa-user"></i> Akun </a>
-
                     <a class="dropdown-item" href="?hal=Logout"><i class="text-danger fa fa-sign-out-alt"></i> Logout </a>
                 </div>
             </li>

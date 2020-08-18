@@ -18,6 +18,7 @@ if (
     && $_GET['hal'] != 'Register'
     && $_GET['hal'] != 'Paket'
     && $_GET['hal'] != 'Tentang'
+    && $_GET['hal'] != 'Gallery'
 ) {
     if (!isset($Session['admin'])) {
         echo "<script>

@@ -68,8 +68,11 @@
                             <input type="hidden" required name="tb[]" value="idpembayaran">
                         </div>
                         <div class="form-grup col-12 mb-2 input-group-sm">
-                            <label class="form-control-label">No. Rekening Pengirim</label>
-                            <input type="text" class="form-control" name="input[]">
+                            <label class="form-control-label">No. Rekening Tujuan</label>
+                           <select class="form-control" name="input[]">
+                               <option>BSM | 778 887 7708 | A.n Bunda Tini</option>
+                               <option>BCA | 731 025 2527 | A.n Bunda Tini</option>
+                           </select>
                             <input type="hidden" required name="tb[]" value="no_rek">
                         </div>
                         <div class="form-grup col-12 mb-2 input-group-sm">
@@ -79,7 +82,13 @@
                         </div>
                         <div class="form-grup col-12 mb-2 input-group-sm">
                             <label class="form-control-label">Nominal</label>
-                            <input type="number" required class="form-control" name="input[]">
+                            <div class="input-group">
+                                <div class="input-group-prepend">
+                                    <span class="input-group-text" id="basic-addon1">Rp.</span>
+                                </div>
+                                <input type="text" id="uang" required class="form-control uang" onkeyup="$('#uang2').val($('#uang').val().replace(/\./g, ''))">
+                            </div>
+                            <input type="hidden" name="input[]" id="uang2" value="">
                             <input type="hidden" name="tb[]" value="nominal">
                         </div>
                         <div class="form-grup col-12 mb-2 input-group-sm">
@@ -113,6 +122,8 @@
                 <thead>
                     <tr>
                         <th>No.</th>
+                        <th>Tujuan</th>
+
                         <th>Pengirim</th>
                         <th>Nominal</th>
                         <th>Validasi</th>
@@ -125,8 +136,11 @@
                         <td>
                             <?php echo $v + 1; ?>
                         </td>
-                        <td>
+                          <td>
                             <?php echo $k->no_rek; ?>
+
+                        </td>
+                        <td>
                             <div class="text-muted">Bank:
                                 <?php echo $k->bank; ?>
                             </div>
@@ -151,12 +165,9 @@
                         </td>
                         <td>
                             <a href="#bukti-<?php echo $k->idpembayaran; ?>" data-toggle="collapse" class="btn btn-sm btn-info">Bukti</a>
-                            <?php if ($Session['admin']->akses == 'Owner'): ?>
+                            <?php if ($Session['admin']->akses == 'Admin'): ?>
                             <a href="Action.php?table=pembayaran&aksi=update&input[]=Valid&tb[]=validasi&primary=idpembayaran&key=<?php echo $k->idpembayaran; ?>" class="btn btn-sm  btn-success">Valid</a>
                             <a href="Action.php?table=pembayaran&aksi=update&input[]=Tidak Valid&tb[]=validasi&primary=idpembayaran&key=<?php echo $k->idpembayaran; ?>" class="btn btn-sm  btn-warning">Tidak Valid</a>
-
-
-
                             <?php endif;?>
                         </td>
                     </tr>
@@ -213,7 +224,6 @@
                                                 <?php echo number_format($k->jum); ?></strong></div>
                                     </div>
                                     <div>
-
                                         <a href="Action.php?aksi=delete&primary[]=idpemesanan&key[]=<?php echo $k->idpemesanan; ?>&primary[]=idpt&key[]=<?php echo $k->idpt; ?>&table=tambahan" class="btn btn-sm btn-primary">Batal</a>
                                     </div>
                                 </div>
@@ -244,7 +254,7 @@
                                 <?php echo number_format($data['tambahan']->sum('jum') + $data['paket']->harga); ?>
                             </th>
                         </tr>
-                         <tr class="bg-white">
+                        <tr class="bg-white">
                             <th></th>
                             <th colspan="">
                                 Sudah Bayar
@@ -254,7 +264,7 @@
                                 <?php echo number_format($data['pembayaran']->where('validasi', 'Valid')->sum('nominal')); ?>
                             </th>
                         </tr>
-                         <tr>
+                        <tr>
                             <th colspan="3">Sisa</th>
                             <th colspan="3">Rp.
                                 <?php echo number_format($data['tambahan']->sum('jum') + $data['paket']->harga - $data['pembayaran']->where('validasi', 'Valid')->sum('nominal')); ?>
@@ -266,9 +276,7 @@
             <div class="card-footer bg-white">
                 <form action="Action.php" method="post">
                     <div class="row">
-                            <?php if ($Session['admin']->akses == 'Pelanggan'): ?>
-
-
+                        <?php if ($Session['admin']->akses == 'Pelanggan'): ?>
                         <div class="form-grup col-6 mb-2 input-group-sm">
                             <label class="form-control-label">Tambahan</label>
                             <select class="form-control" name="input[]">
@@ -286,8 +294,7 @@
                             <input type="number" class="form-control" name="input[]">
                             <input type="hidden" name="tb[]" value="qty">
                         </div>
-                            <?php endif;?>
-
+                        <?php endif;?>
                         <div class="modal-footer mt-4 d-flex justify-content-center col-12  py-1">
                             <?php if ($Session['admin']->akses == 'Pelanggan'): ?>
                             <input type="hidden" name="input[]" value="<?php echo $Request->key; ?>">
@@ -304,7 +311,15 @@
                 </form>
             </div>
         </div>
-        <div class="card rounded shadow" style="zoom:85%">
+        <div class="d-flex justify-content-center align-items-center mb-2">
+            Hubungi Penjualan
+            <div class="card rounded-circle p-2 shadow">
+                <a href="#chat" data-toggle="collapse" class="text-reset">
+                    <i style="font-size: 5vh" class="text-danger fa fa-comments"></i>
+                </a>
+            </div>
+        </div>
+        <div id="chat" class="card rounded collapse shadow" style="zoom:85%">
             <h5 class="text-dark ml-2 text-center mt-1 pt-1">Diskusi</h5>
             <div class=" card-body  overflow-auto px-1" id="diskusi" style="background-color: #eff1f4c2;height: 309px">
                 <?php foreach ($data['diskusi'] as $v => $k): ?>

@@ -49,6 +49,50 @@ class Controller
 
         }
     }
+    public function Tentang()
+    {
+        $data = [
+            'judul' => 'Tentang Kami',
+            'path' => 'Tentang',
+            'link' => 'Tentang',
+            'icon' => 'fa-store-alt',
+
+        ];
+        $data['a'] = scandir('mine/foto');
+        array_shift($data['a']);
+        array_shift($data['a']);
+        $this->Data = $data;
+
+    }
+    public function Gallery()
+    {
+        $data = [
+            'judul' => 'Gallery Baju Adat',
+            'path' => 'Gallery',
+            'link' => 'Gallery',
+            'icon' => 'fa-store-alt',
+
+        ];
+        $isi = $this->Request->isi;
+        if ($isi == '0') {
+            $data['judul'] = 'Gallery Baju Selayar';
+        }
+        if ($isi == '1') {
+            $data['judul'] = 'Gallery Baju Adat';
+        }
+        $data['a'] = scandir('galeri/gallery' . $isi);
+        array_shift($data['a']);
+        array_shift($data['a']);
+        $data['a'] = collect($data['a'])->mapWithKeys(function ($item) use ($isi) {
+            $x = scandir('galeri/gallery' . $isi . '/' . $item);
+            array_shift($x);
+            array_shift($x);
+            return [$item => $x];
+
+        });
+        $this->Data = $data;
+
+    }
     public function Logout()
     {
         session_destroy();
@@ -76,7 +120,6 @@ class Controller
         $data['user.form'] = json_decode($fields1, true);
         $fields1 = '[
 
-                {"name":"email","label":"Email","type":"email","max":"35","pnj":12,"val":null,"red":"required","input":true,"up":true,"tb":true,"var":"input[]","var2":"tb[]"},
                 {"name":"user","label":"Username","type":"text","max":"15","pnj":12,"val":null,"red":"required","input":true,"up":true,"tb":true,"var":"input[]","var2":"tb[]"},
                 {"name":"pass","label":"Password","type":"password","max":"15","pnj":12,"val":null,"red":"required","input":true,"up":true,"tb":true,"var":"input[]","var2":"tb[]"}
                 ]';
@@ -107,7 +150,6 @@ class Controller
         $data['user.form'] = json_decode($fields1, true);
         $fields1 = '[
 
-                {"name":"email","label":"Email","type":"email","max":"35","pnj":12,"val":null,"red":"required","input":true,"up":true,"tb":true,"var":"input[]","var2":"tb[]"},
                 {"name":"user","label":"Username","type":"text","max":"15","pnj":12,"val":null,"red":"required","input":true,"up":true,"tb":true,"var":"input[]","var2":"tb[]"},
                 {"name":"pass","label":"Password","type":"password","max":"15","pnj":12,"val":null,"red":"required","input":true,"up":true,"tb":true,"var":"input[]","var2":"tb[]"}
                 ]';
@@ -136,6 +178,9 @@ class Controller
             'warna' => 'primary',
 
         ];
+        $data['a'] = scandir('foto');
+        array_shift($data['a']);
+        array_shift($data['a']);
         $this->Data = $data;
     }
 
@@ -432,7 +477,6 @@ class Controller
              {"name":"alamat","label":"Alamat","type":"text","max":"40","pnj":12,"val":null,"red":"","input":true,"up":true,"tb":true,"var":"input[]","var2":"tb[]"},
              {"name":"jk","label":"Jenis Kelamin","type":"text","max":"10","pnj":12,"val":null,"red":"","input":true,"up":true,"tb":true,"var":"input[]","var2":"tb[]"},
              {"name":"hp","label":"No HP","type":"text","max":"12","pnj":12,"val":null,"red":"","input":true,"up":true,"tb":true,"var":"input[]","var2":"tb[]"},
-             {"name":"email","label":"Email","type":"text","max":"35","pnj":12,"val":null,"red":"","input":true,"up":true,"tb":true,"var":"input[]","var2":"tb[]"},
              {"name":"user","label":"Username","type":"text","max":"15","pnj":12,"val":null,"red":"","input":true,"up":true,"tb":true,"var":"input[]","var2":"tb[]"}
 
 
@@ -460,7 +504,6 @@ class Controller
              {"name":"alamat","label":"Alamat","type":"text","max":"40","pnj":12,"val":null,"red":"","input":true,"up":true,"tb":true,"var":"input[]","var2":"tb[]"},
              {"name":"jk","label":"Jenis Kelamin","type":"text","max":"10","pnj":12,"val":null,"red":"","input":true,"up":true,"tb":true,"var":"input[]","var2":"tb[]"},
              {"name":"hp","label":"No HP","type":"text","max":"12","pnj":12,"val":null,"red":"","input":true,"up":true,"tb":true,"var":"input[]","var2":"tb[]"},
-             {"name":"email","label":"Email","type":"text","max":"35","pnj":12,"val":null,"red":"","input":true,"up":true,"tb":true,"var":"input[]","var2":"tb[]"},
              {"name":"user","label":"Username","type":"text","max":"15","pnj":12,"val":null,"red":"","input":true,"up":true,"tb":true,"var":"input[]","var2":"tb[]"}
 
 
@@ -558,6 +601,36 @@ class Controller
                 return $item;
             });
         }
+        if (isset($Request->jenis)) {
+            if ($Request->jenis == 'Perorang') {
+                $data['pelanggan'] = collect($this->Crud->mysqli2->table('user')->select()->where('akses', 'Pelanggan')->get());
+                if (isset($Request->pelanggan)) {
+                    $data['pemesanan'] = collect($this->Crud->mysqli2->table('pemesanan')->select()->join('paket', 'paket.idpaket', '=', 'pemesanan.idpaket')->join('user', 'user.iduser', '=', 'pemesanan.iduser')->where('user.iduser', $Request->pelanggan)->get());
+                    $data['idpemesanan'] = $data['pemesanan']->pluck('idpemesanan')->toArray();
+                    $data['pembayaran'] = collect($this->Crud->mysqli2->table('pembayaran')->select()->whereIn('idpemesanan', $data['idpemesanan'])->get());
+                    $data['tambahan'] = collect($this->Crud->mysqli2->table('tambahan')->select()->join('paket_tambahan', 'paket_tambahan.idpt', '=', 'tambahan.idpt')->whereIn('idpemesanan', $data['idpemesanan'])->get());
+                    $data['tambahan'] = $data['tambahan']->groupBy('idpt')->map(function ($item, $key) {
+                        $a = $item[0];
+                        $a->qty = $item->sum('qty');
+                        $a->jum = $item->sum('qty') * $a->harga;
+                        return $a;
+                    });
+                    $data['pemesanan'] = $data['pemesanan']->map(function ($item, $key) use ($data) {
+                        $item->tambahan = $data['tambahan']->where('idpemesanan', $item->idpemesanan)->values();
+                        $item->tambahantotal = $item->tambahan->sum('jum');
+                        $item->totalbayar = $data['pembayaran']->where('idpemesanan', $item->idpemesanan)->where('validasi', "Valid")->sum('nominal');
+                        $item->total = $item->harga + $item->tambahantotal;
+                        $item->sisa = $item->total - $item->totalbayar;
+                        return $item;
+                    });
+                    $data['pelanggan.key'] = $data['pelanggan']->where('iduser', $Request->pelanggan)->first();
+
+                }
+
+            }
+        }
+        $data['admin'] = collect($this->Crud->mysqli2->table('user')->select()->where('akses', 'Admin')->get())->first();
+        $data['owner'] = collect($this->Crud->mysqli2->table('user')->select()->where('akses', 'Owner')->get())->first();
 
         $this->Data = $data;
     }
