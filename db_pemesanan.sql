@@ -1,14 +1,13 @@
 -- phpMyAdmin SQL Dump
--- version 5.0.1
+-- version 5.0.2
 -- https://www.phpmyadmin.net/
 --
--- Host: localhost
--- Waktu pembuatan: 07 Jan 2021 pada 04.40
--- Versi server: 10.3.27-MariaDB
--- Versi PHP: 7.2.34
+-- Host: 127.0.0.1
+-- Generation Time: Sep 13, 2020 at 05:18 AM
+-- Server version: 10.4.13-MariaDB
+-- PHP Version: 7.2.32
 
 SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
-SET AUTOCOMMIT = 0;
 START TRANSACTION;
 SET time_zone = "+00:00";
 
@@ -19,13 +18,13 @@ SET time_zone = "+00:00";
 /*!40101 SET NAMES utf8mb4 */;
 
 --
--- Database: `buildweb_rahma`
+-- Database: `db_pemesanan`
 --
 
 -- --------------------------------------------------------
 
 --
--- Struktur dari tabel `diskusi`
+-- Table structure for table `diskusi`
 --
 
 CREATE TABLE `diskusi` (
@@ -37,7 +36,7 @@ CREATE TABLE `diskusi` (
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 --
--- Dumping data untuk tabel `diskusi`
+-- Dumping data for table `diskusi`
 --
 
 INSERT INTO `diskusi` (`idpesan`, `idpemesanan`, `iduser`, `pesan`, `terkirim`) VALUES
@@ -46,16 +45,12 @@ INSERT INTO `diskusi` (`idpesan`, `idpemesanan`, `iduser`, `pesan`, `terkirim`) 
 (7, 'PP00015', 'U00015', 'halo bunda..saya ingin memesan paket 2 bun..', '2020-08-25 03:02:13'),
 (8, 'PP00016', 'U00016', 'assalamu\'alaikum', '2020-08-25 09:28:24'),
 (9, 'PP00016', 'U00003', 'wa\'alaikumussalm', '2020-08-25 09:45:44'),
-(10, 'PP00016', 'U00016', 'saya pesan paket 2 ya kak', '2020-08-25 09:47:59'),
-(11, 'PP00018', 'U00019', 'assalamu\'alaikum bunda', '2020-09-14 07:08:04'),
-(12, 'PP00018', 'U00019', 'saya pesan paket 3 ya bun', '2020-09-14 07:08:40'),
-(13, 'PP00018', 'U00003', 'wa\'alaikumussalam', '2020-09-14 07:10:05'),
-(14, 'PP00018', 'U00003', 'terima kasih ya, untuk lebih lanjut..\r\nnnti saya hubungi ya :)', '2020-09-14 07:10:54');
+(10, 'PP00016', 'U00016', 'saya pesan paket 2 ya kak', '2020-08-25 09:47:59');
 
 -- --------------------------------------------------------
 
 --
--- Struktur dari tabel `paket`
+-- Table structure for table `paket`
 --
 
 CREATE TABLE `paket` (
@@ -67,7 +62,7 @@ CREATE TABLE `paket` (
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 --
--- Dumping data untuk tabel `paket`
+-- Dumping data for table `paket`
 --
 
 INSERT INTO `paket` (`idpaket`, `nama_paket`, `desk`, `harga`, `url`) VALUES
@@ -81,7 +76,7 @@ INSERT INTO `paket` (`idpaket`, `nama_paket`, `desk`, `harga`, `url`) VALUES
 -- --------------------------------------------------------
 
 --
--- Struktur dari tabel `paket_tambahan`
+-- Table structure for table `paket_tambahan`
 --
 
 CREATE TABLE `paket_tambahan` (
@@ -92,7 +87,7 @@ CREATE TABLE `paket_tambahan` (
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 --
--- Dumping data untuk tabel `paket_tambahan`
+-- Dumping data for table `paket_tambahan`
 --
 
 INSERT INTO `paket_tambahan` (`idpt`, `nama_pt`, `satuan`, `harga`) VALUES
@@ -109,7 +104,7 @@ INSERT INTO `paket_tambahan` (`idpt`, `nama_pt`, `satuan`, `harga`) VALUES
 -- --------------------------------------------------------
 
 --
--- Struktur dari tabel `pembayaran`
+-- Table structure for table `pembayaran`
 --
 
 CREATE TABLE `pembayaran` (
@@ -124,7 +119,7 @@ CREATE TABLE `pembayaran` (
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 --
--- Dumping data untuk tabel `pembayaran`
+-- Dumping data for table `pembayaran`
 --
 
 INSERT INTO `pembayaran` (`idpembayaran`, `nominal`, `bank`, `no_rek`, `url`, `idpemesanan`, `status`, `validasi`) VALUES
@@ -155,13 +150,12 @@ INSERT INTO `pembayaran` (`idpembayaran`, `nominal`, `bank`, `no_rek`, `url`, `i
 ('Pay-00025', 5000000, 'BNI', '0309888520 | A.n Mariantini', '5f44d9fc1dfc4.jpg', 'PP00016', 'DP', 'Valid'),
 ('Pay-00026', 5500000, 'BNI', '0309888520 | A.n Mariantini', '5f5d787d80b61.jpg', 'PP00016', 'Lunas', 'Valid'),
 ('Pay-00027', 5000000, 'BNI', '0309888520 | A.n Mariantini', '5f5d79fdb9282.jpg', 'PP00014', 'Lunas', 'Valid'),
-('Pay-00028', 5000000, 'BNI', '0309888520 | A.n Mariantini', '5f5d7d442d057.jpg', 'PP00017', 'DP', 'Valid'),
-('Pay-00029', 7500000, 'BNI', '0309888520 | A.n Mariantini', '5f5f156de53f0.jpg', 'PP00018', 'DP', 'Valid');
+('Pay-00028', 5000000, 'BNI', '0309888520 | A.n Mariantini', '5f5d7d442d057.jpg', 'PP00017', 'DP', 'Valid');
 
 -- --------------------------------------------------------
 
 --
--- Struktur dari tabel `pemesanan`
+-- Table structure for table `pemesanan`
 --
 
 CREATE TABLE `pemesanan` (
@@ -174,7 +168,7 @@ CREATE TABLE `pemesanan` (
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 --
--- Dumping data untuk tabel `pemesanan`
+-- Dumping data for table `pemesanan`
 --
 
 INSERT INTO `pemesanan` (`idpemesanan`, `iduser`, `tgl_pesan`, `tgl_acara`, `idpaket`, `status`) VALUES
@@ -194,14 +188,12 @@ INSERT INTO `pemesanan` (`idpemesanan`, `iduser`, `tgl_pesan`, `tgl_acara`, `idp
 ('PP00014', 'U00014', '2020-08-25', '2020-08-28', 'P00002', 'Selesai'),
 ('PP00015', 'U00015', '2020-08-25', '2020-08-29', 'P00002', 'Dibatalkan'),
 ('PP00016', 'U00016', '2020-08-25', '2020-09-10', 'P00002', 'Selesai'),
-('PP00017', 'U00018', '2020-09-13', '2020-09-26', 'P00003', 'Diproses'),
-('PP00018', 'U00019', '2020-09-14', '2020-09-30', 'P00003', 'Diproses'),
-('PP00019', 'U00005', '2020-09-18', '2020-10-17', 'P00001', 'Menunggu Pembayaran');
+('PP00017', 'U00018', '2020-09-13', '2020-09-26', 'P00003', 'Diproses');
 
 -- --------------------------------------------------------
 
 --
--- Struktur dari tabel `tambahan`
+-- Table structure for table `tambahan`
 --
 
 CREATE TABLE `tambahan` (
@@ -212,7 +204,7 @@ CREATE TABLE `tambahan` (
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 --
--- Dumping data untuk tabel `tambahan`
+-- Dumping data for table `tambahan`
 --
 
 INSERT INTO `tambahan` (`id`, `idpt`, `qty`, `idpemesanan`) VALUES
@@ -244,13 +236,12 @@ INSERT INTO `tambahan` (`id`, `idpt`, `qty`, `idpemesanan`) VALUES
 (34, 'PT00003', 1, 'PP00015'),
 (35, 'PT00005', 1, 'PP00016'),
 (36, 'PT00005', 1, 'PP00017'),
-(37, 'PT00006', 1, 'PP00017'),
-(38, 'PT00008', 1, 'PP00018');
+(37, 'PT00006', 1, 'PP00017');
 
 -- --------------------------------------------------------
 
 --
--- Struktur dari tabel `user`
+-- Table structure for table `user`
 --
 
 CREATE TABLE `user` (
@@ -265,7 +256,7 @@ CREATE TABLE `user` (
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 --
--- Dumping data untuk tabel `user`
+-- Dumping data for table `user`
 --
 
 INSERT INTO `user` (`iduser`, `nama`, `alamat`, `jk`, `hp`, `user`, `pass`, `akses`) VALUES
@@ -286,15 +277,14 @@ INSERT INTO `user` (`iduser`, `nama`, `alamat`, `jk`, `hp`, `user`, `pass`, `aks
 ('U00015', 'novita sari', 'sukajadi', 'Perempuan', '081234874586', 'vita', 'vita', 'Pelanggan'),
 ('U00016', 'wardahtul Khodijah', 'bumiayu', 'Perempuan', '082376458765', 'warda', 'warda', 'Pelanggan'),
 ('U00017', 'intan', 'sudirman', 'Perempuan', '0976', 'intan', 'intan', 'Pelanggan'),
-('U00018', 'Juliana', 'Jl. Gunung Merbabu', 'Perempuan', '081289371087', 'juliana', 'juliana', 'Pelanggan'),
-('U00019', 'zahra humaira', 'jl. sudirman', 'Perempuan', '082383500703', 'zahra', 'zahra', 'Pelanggan');
+('U00018', 'Juliana', 'Jl. Gunung Merbabu', 'Perempuan', '081289371087', 'juliana', 'juliana', 'Pelanggan');
 
 --
 -- Indexes for dumped tables
 --
 
 --
--- Indeks untuk tabel `diskusi`
+-- Indexes for table `diskusi`
 --
 ALTER TABLE `diskusi`
   ADD PRIMARY KEY (`idpesan`),
@@ -302,26 +292,26 @@ ALTER TABLE `diskusi`
   ADD KEY `iduser` (`iduser`);
 
 --
--- Indeks untuk tabel `paket`
+-- Indexes for table `paket`
 --
 ALTER TABLE `paket`
   ADD PRIMARY KEY (`idpaket`);
 
 --
--- Indeks untuk tabel `paket_tambahan`
+-- Indexes for table `paket_tambahan`
 --
 ALTER TABLE `paket_tambahan`
   ADD PRIMARY KEY (`idpt`);
 
 --
--- Indeks untuk tabel `pembayaran`
+-- Indexes for table `pembayaran`
 --
 ALTER TABLE `pembayaran`
   ADD PRIMARY KEY (`idpembayaran`),
   ADD KEY `idpemesanan` (`idpemesanan`);
 
 --
--- Indeks untuk tabel `pemesanan`
+-- Indexes for table `pemesanan`
 --
 ALTER TABLE `pemesanan`
   ADD PRIMARY KEY (`idpemesanan`),
@@ -329,7 +319,7 @@ ALTER TABLE `pemesanan`
   ADD KEY `idpaket` (`idpaket`);
 
 --
--- Indeks untuk tabel `tambahan`
+-- Indexes for table `tambahan`
 --
 ALTER TABLE `tambahan`
   ADD PRIMARY KEY (`id`),
@@ -337,26 +327,26 @@ ALTER TABLE `tambahan`
   ADD KEY `idpemesanan` (`idpemesanan`);
 
 --
--- Indeks untuk tabel `user`
+-- Indexes for table `user`
 --
 ALTER TABLE `user`
   ADD PRIMARY KEY (`iduser`);
 
 --
--- AUTO_INCREMENT untuk tabel yang dibuang
+-- AUTO_INCREMENT for dumped tables
 --
 
 --
--- AUTO_INCREMENT untuk tabel `diskusi`
+-- AUTO_INCREMENT for table `diskusi`
 --
 ALTER TABLE `diskusi`
-  MODIFY `idpesan` int(11) NOT NULL AUTO_INCREMENT COMMENT 'ID Pesan', AUTO_INCREMENT=15;
+  MODIFY `idpesan` int(11) NOT NULL AUTO_INCREMENT COMMENT 'ID Pesan', AUTO_INCREMENT=11;
 
 --
--- AUTO_INCREMENT untuk tabel `tambahan`
+-- AUTO_INCREMENT for table `tambahan`
 --
 ALTER TABLE `tambahan`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT COMMENT 'ID Tambahan', AUTO_INCREMENT=39;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT COMMENT 'ID Tambahan', AUTO_INCREMENT=38;
 COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;

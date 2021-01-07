@@ -22,7 +22,7 @@ function insert($Request, $Crud, $link, $pesan)
     $input = $Request->input;
     $table = $Request->table;
     if ($table == 'pemesanan') {
-        $cek = collect($Crud->table('pemesanan')->select()->where('tgl_acara', $input[3])->get());
+        $cek = collect($Crud->table('pemesanan')->select()->where('status', '!=', 'Dibatalkan')->where('tgl_acara', $input[3])->get());
         if ($cek->isNotEmpty()) {
             $pesan = "Maaf sudah ada yang membooking acara pada tanggal yang anda pilih";
             $link = $_SERVER['HTTP_REFERER'];

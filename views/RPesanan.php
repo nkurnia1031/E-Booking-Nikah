@@ -70,7 +70,13 @@
                             Rp.<?php echo number_format($k->totalbayar); ?>
                         </td>
                          <td>
+                            <?php if ($k->sisa < 0): ?>
+                            Rp.<?php echo number_format(0); ?>
+
+                                <?php else: ?>
                             Rp.<?php echo number_format($k->sisa); ?>
+
+                            <?php endif;?>
                         </td>
                         <td><?php echo $k->status; ?></td>
                         <td class="text-right ">

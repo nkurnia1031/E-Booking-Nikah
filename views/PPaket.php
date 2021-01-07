@@ -25,7 +25,7 @@
                                 <?php include $komponen . '/Input.php';?>
                                 <?php endforeach;?>
                                 <div class="form-grup col-12 mb-2 input-group-sm">
-                                    <label class="form-control-label">Nama Paket</label>
+                                    <label class="form-control-label">ID Paket</label>
                                     <input type="text" class="form-control" readonly="" value="<?php echo $data['paket']->idpaket; ?>" name="input[]">
                                     <input type="hidden" name="tb[]" value="idpaket">
                                 </div>

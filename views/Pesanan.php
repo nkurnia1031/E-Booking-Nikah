@@ -56,7 +56,14 @@
                             Rp.<?php echo number_format($k->totalbayar); ?>
                         </td>
                          <td>
+                            <?php if ($k->sisa < 0): ?>
+                            Rp.<?php echo number_format(0); ?>
+
+                                <?php else: ?>
                             Rp.<?php echo number_format($k->sisa); ?>
+
+                            <?php endif;?>
+
                         </td>
                         <td><?php echo $k->status; ?></td>
                         <td class="text-right ">
@@ -69,8 +76,14 @@
                     <tr>
                         <th colspan="3">Grand Total</th>
                         <th colspan="">Rp.<?php echo number_format($data['pemesanan']->sum('total')); ?></th>
-                        <th colspan="">Rp.<?php echo number_format($data['pemesanan']->sum('bayartotal')); ?></th>
+                        <th colspan="">Rp.<?php echo number_format($data['pemesanan']->sum('totalbayar')); ?></th>
+                        <?php if ($data['pemesanan']->sum('sisa') < 0): ?>
+                        <th colspan="">Rp.<?php echo number_format(0); ?></th>
+
+                            <?php else: ?>
                         <th colspan="">Rp.<?php echo number_format($data['pemesanan']->sum('sisa')); ?></th>
+
+                        <?php endif;?>
                         <th colspan="">
                             <?php foreach ($data['pemesanan']->groupBy('status') as $k => $v): ?>
 

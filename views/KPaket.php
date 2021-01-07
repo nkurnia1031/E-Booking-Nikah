@@ -11,6 +11,18 @@
                             <label class="form-control-label">Foto Cover</label>
                             <input type="file" class="form-control" name="input[]">
                         </div>
+                        <?php elseif ($isi['name'] == 'harga'): ?>
+                               <div class="form-grup col-12 mb-2 input-group-sm">
+                            <label class="form-control-label"><?php echo $isi['label']; ?></label>
+                            <div class="input-group">
+                                <div class="input-group-prepend">
+                                    <span class="input-group-text" id="basic-addon1">Rp.</span>
+                                </div>
+                                <input type="text" id="uang" value="<?php echo $isi['val']; ?>" required class="form-control uang" onkeyup="$('#uang2').val($('#uang').val().replace(/\./g, ''))">
+                            </div>
+                            <input type="hidden" name="input[]" id="uang2" value="<?php echo $isi['val']; ?>">
+                            <input type="hidden" name="tb[]" value="<?php echo $isi['name']; ?>">
+                        </div>
                         <?php else: ?>
                         <?php include $komponen . '/Input.php';?>
                         <?php endif;?>

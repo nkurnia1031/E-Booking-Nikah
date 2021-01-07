@@ -54,6 +54,7 @@ class Controller
         $data = [
             'judul' => 'Tentang Kami',
             'path' => 'Tentang',
+            'induk' => 'Informasi',
             'link' => 'Tentang',
             'icon' => 'fa-store-alt',
 
@@ -61,6 +62,45 @@ class Controller
         $data['a'] = scandir('mine/foto');
         array_shift($data['a']);
         array_shift($data['a']);
+        $this->Data = $data;
+
+    }
+    public function Syarat()
+    {
+        $data = [
+            'judul' => 'SYARAT & KETENTUAN PEMESANAN',
+            'path' => 'Syarat',
+            'induk' => 'Informasi',
+            'link' => 'Syarat',
+            'icon' => 'fa-store-alt',
+
+        ];
+
+        $this->Data = $data;
+
+    }
+    public function Jadwal()
+    {
+        $data = [
+            'judul' => 'Cek Jadwal',
+            'path' => 'Jadwal',
+            'induk' => 'Informasi',
+            'link' => 'Jadwal',
+            'icon' => 'fa-store-alt',
+
+        ];
+        $cek = collect($this->Crud->mysqli2->table('pemesanan')->select()->where('status', '!=', 'Dibatalkan')->get());
+        $data['jadwal'] = array();
+        foreach ($cek as $k) {
+
+            $x = [
+                "start" => $k->tgl_acara,
+                "display" => 'background',
+                "color" => "#dc3545",
+            ];
+            array_push($data['jadwal'], $x);
+        }
+
         $this->Data = $data;
 
     }
@@ -79,6 +119,9 @@ class Controller
         }
         if ($isi == '1') {
             $data['judul'] = 'Gallery Baju Adat';
+        }
+        if ($isi == '2') {
+            $data['judul'] = 'Gallery Dekorasi Pelaminan';
         }
         $data['a'] = scandir('galeri/gallery' . $isi);
         array_shift($data['a']);
@@ -199,7 +242,7 @@ class Controller
         $fields1 = '[
                 {"name":"idpaket","label":"ID Paket","type":"text","max":"5","pnj":12,"val":null,"red":"","input":true,"up":true,"tb":true,"var":"input[]","var2":"tb[]"},
                 {"name":"nama_paket","label":"Nama Paket","type":"text","max":"30","pnj":12,"val":null,"red":"","input":true,"up":true,"tb":true,"var":"input[]","var2":"tb[]"},
-                {"name":"desk","label":"Deskripsi","type":"text","max":"100","pnj":12,"val":null,"red":"","input":true,"up":true,"tb":true,"var":"input[]","var2":"tb[]"},
+                {"name":"desk","label":"Deskripsi","type":"text","max":"500","pnj":12,"val":null,"red":"","input":true,"up":true,"tb":true,"var":"input[]","var2":"tb[]"},
                 {"name":"harga","label":"Harga","type":"number","max":null,"pnj":12,"val":null,"red":"","input":true,"up":true,"tb":true,"var":"input[]","var2":"tb[]"},
                 {"name":"url","label":"Gambar","type":"text","max":"65535","pnj":12,"val":null,"red":"","input":true,"up":true,"tb":true,"var":"input[]","var2":"tb[]"}
                 ]';
@@ -227,7 +270,7 @@ class Controller
         $fields1 = '[
                 {"name":"idpaket","label":"ID Paket","type":"text","max":"5","pnj":12,"val":null,"red":"readonly","input":true,"up":true,"tb":true,"var":"input[]","var2":"tb[]"},
                 {"name":"nama_paket","label":"Nama Paket","type":"text","max":"30","pnj":12,"val":null,"red":"required","input":true,"up":true,"tb":true,"var":"input[]","var2":"tb[]"},
-                {"name":"desk","label":"Deskripsi","type":"textarea","max":"100","pnj":12,"val":null,"red":"required placeholder=\'Gunakan enter untuk memisahkan tiap barisnya\' ","input":true,"up":true,"tb":true,"var":"input[]","var2":"tb[]"},
+                {"name":"desk","label":"Deskripsi","type":"textarea","max":"500","pnj":12,"val":null,"red":"required placeholder=\'Gunakan enter untuk memisahkan tiap barisnya\' ","input":true,"up":true,"tb":true,"var":"input[]","var2":"tb[]"},
                 {"name":"harga","label":"Harga","type":"number","max":null,"pnj":12,"val":null,"red":"required","input":true,"up":true,"tb":true,"var":"input[]","var2":"tb[]"},
                 {"name":"url","label":"Gambar","type":"file","max":"65535","pnj":12,"val":null,"red":"","input":true,"up":true,"tb":true,"var":"input[]","var2":"tb[]"}
                 ]';
@@ -276,7 +319,12 @@ class Controller
                 ]';
         $data['paket.form2'] = json_decode($fields1, true);
         $data['paket'] = $this->Crud->mysqli2->table('pemesanan')->select('idpemesanan')->orderBy('idpemesanan', 'desc')->limit(1)->get();
-        $data['paket.form'][0]['val'] = "PP" . sprintf('%05d', intval(substr($data['paket']->idpemesanan, 2)) + 1);
+        if ($data['paket']) {
+            $data['paket.form'][0]['val'] = "PP" . sprintf('%05d', intval(substr($data['paket']->idpemesanan, 2)) + 1);
+        } else {
+            $data['paket.form'][0]['val'] = "PP" . sprintf('%05d', intval(0) + 1);
+
+        }
         $data['paket.form'][1]['val'] = $Session['admin']->iduser;
         $data['paket.form'][2]['val'] = $Session['admin']->nama;
         $data['paket.form'][3]['val'] = date('Y-m-d');
@@ -320,10 +368,8 @@ class Controller
         $data['paket.form2'] = json_decode($fields1, true);
         // $data['paket'] = collect($this->Crud->mysqli2->table('paket')->select()->get());
         $data['paket.form'][0]['val'] = $Request->key;
-        $data['paket.form'][1]['val'] = $Session['admin']->iduser;
 
-        $data['paket.form'][2]['val'] = $Session['admin']->nama;
-        $data['paket'] = collect($this->Crud->mysqli2->table('pemesanan')->select()->join('paket', 'paket.idpaket', '=', 'pemesanan.idpaket')->where('pemesanan.idpemesanan', $Request->key)->get());
+        $data['paket'] = collect($this->Crud->mysqli2->table('pemesanan')->select()->join('paket', 'paket.idpaket', '=', 'pemesanan.idpaket')->join('user', 'user.iduser', '=', 'pemesanan.iduser')->where('pemesanan.idpemesanan', $Request->key)->get());
         $data['diskusi'] = collect($this->Crud->mysqli2->table('diskusi')->select()->where('idpemesanan', $Request->key)->get())->sortBy('terkirim');
         $data['diskusi'] = $data['diskusi']->map(function ($item, $key) {
             $item->tgl = date_format(date_create($item->terkirim), 'd/m/Y');
@@ -342,7 +388,10 @@ class Controller
         $data['paket'] = $data['paket']->first();
         $data['paket.form'][3]['val'] = $data['paket']->tgl_pesan;
         $data['paket.form2'][0]['val'] = $data['paket']->tgl_acara;
-        if ($Session['admin']->akses == 'Owner') {
+        $data['paket.form'][1]['val'] = $data['paket']->iduser;
+
+        $data['paket.form'][2]['val'] = $data['paket']->nama;
+        if ($Session['admin']->akses == 'Admin') {
             $data['paket.form2'][0]['red'] = "readonly";
         }
         $data['paket_tambahan'] = collect($this->Crud->mysqli2->table('paket_tambahan')->select()->get());
@@ -392,20 +441,33 @@ class Controller
         if ($Session['admin']->akses == 'Pelanggan') {
             $data['pemesanan'] = collect($this->Crud->mysqli2->table('pemesanan')->select()->join('paket', 'paket.idpaket', '=', 'pemesanan.idpaket')->join('user', 'user.iduser', '=', 'pemesanan.iduser')->where('user.iduser', $Session['admin']->iduser)->get());
         } else {
-            $data['pemesanan'] = collect($this->Crud->mysqli2->table('pemesanan')->select()->join('paket', 'paket.idpaket', '=', 'pemesanan.idpaket')->join('user', 'user.iduser', '=', 'pemesanan.iduser')->get());
+            $data['pemesanan'] = collect($this->Crud->mysqli2->table('pemesanan')->select()->join('paket', 'paket.idpaket', '=', 'pemesanan.idpaket')->join('user', 'user.iduser', '=', 'pemesanan.iduser')->where('akses', 'Pelanggan')->get());
 
         }
         $data['idpemesanan'] = $data['pemesanan']->pluck('idpemesanan')->toArray();
         $data['pembayaran'] = collect($this->Crud->mysqli2->table('pembayaran')->select()->whereIn('idpemesanan', $data['idpemesanan'])->get());
         $data['tambahan'] = collect($this->Crud->mysqli2->table('tambahan')->select()->join('paket_tambahan', 'paket_tambahan.idpt', '=', 'tambahan.idpt')->whereIn('idpemesanan', $data['idpemesanan'])->get());
-        $data['tambahan'] = $data['tambahan']->groupBy('idpt')->map(function ($item, $key) {
-            $a = $item[0];
-            $a->qty = $item->sum('qty');
-            $a->jum = $item->sum('qty') * $a->harga;
-            return $a;
+        $data['tambahan'] = $data['tambahan']->groupBy('idpemesanan')->map(function ($item, $key) {
+            $item->groupBy('idpt')->map(function ($item) {
+                $a = $item[0];
+                $a->qty = $item->sum('qty');
+                $a->jum = $item->sum('qty') * $a->harga;
+                return $a;
+
+            });
+
+            return $item;
         });
-        $data['pemesanan'] = $data['pemesanan']->map(function ($item, $key) use ($data) {
-            $item->tambahan = $data['tambahan']->where('idpemesanan', $item->idpemesanan)->values();
+        $data['pemesanan'] = $data['pemesanan']->where('status', '!=', 'Dibatalkan')->map(function ($item, $key) use ($data) {
+            if (array_key_exists($item->idpemesanan, $data['tambahan']->toArray())) {
+                if (array_key_exists($item->idpemesanan, $data['tambahan']->toArray())) {
+                    $item->tambahan = $data['tambahan'][$item->idpemesanan]->values();
+                } else {
+                    $item->tambahan = collect([]);
+                }
+            } else {
+                $item->tambahan = collect([]);
+            }
             $item->tambahantotal = $item->tambahan->sum('jum');
             $item->totalbayar = $data['pembayaran']->where('idpemesanan', $item->idpemesanan)->where('validasi', "Valid")->sum('nominal');
             $item->total = $item->harga + $item->tambahantotal;
@@ -433,8 +495,7 @@ class Controller
                {"name":"idpt","label":"ID Paket","type":"text","max":"15","pnj":12,"val":null,"red":"readonly","input":true,"up":true,"tb":true,"var":"input[]","var2":"tb[]"},
                {"name":"nama_pt","label":"Nama Paket","type":"text","max":"25","pnj":12,"val":null,"red":"required","input":true,"up":true,"tb":true,"var":"input[]","var2":"tb[]"},
                {"name":"satuan","label":"Satuan","type":"text","max":"10","pnj":12,"val":null,"red":"","input":true,"up":true,"tb":true,"var":"input[]","var2":"tb[]"},
-               {"name":"harga","label":"Harga Satuan","type":"number","max":null,"pnj":12,"val":null,"red":"required","input":true,"up":true,"tb":true,"var":"input[]","var2":"tb[]"},
-               {"name":"ket","label":"Keterangan","type":"text","max":"100","pnj":12,"val":null,"red":"","input":true,"up":true,"tb":true,"var":"input[]","var2":"tb[]"}
+               {"name":"harga","label":"Harga Satuan","type":"number","max":null,"pnj":12,"val":null,"red":"required","input":true,"up":true,"tb":true,"var":"input[]","var2":"tb[]"}
 
 
                 ]';
@@ -528,15 +589,27 @@ class Controller
         $data['idpemesanan'] = $data['pemesanan']->pluck('idpemesanan')->toArray();
         $data['pembayaran'] = collect($this->Crud->mysqli2->table('pembayaran')->select()->whereIn('idpemesanan', $data['idpemesanan'])->get());
         $data['tambahan'] = collect($this->Crud->mysqli2->table('tambahan')->select()->join('paket_tambahan', 'paket_tambahan.idpt', '=', 'tambahan.idpt')->whereIn('idpemesanan', $data['idpemesanan'])->get());
-        $data['tambahan'] = $data['tambahan']->groupBy('idpt')->map(function ($item, $key) {
-            $a = $item[0];
-            $a->qty = $item->sum('qty');
-            $a->jum = $item->sum('qty') * $a->harga;
-            return $a;
-        });
+        $data['tambahan'] = $data['tambahan']->groupBy('idpemesanan')->map(function ($item, $key) {
+            $item->groupBy('idpt')->map(function ($item) {
+                $a = $item[0];
+                $a->qty = $item->sum('qty');
+                $a->jum = $item->sum('qty') * $a->harga;
+                return $a;
 
-        $data['pemesanan'] = $data['pemesanan']->map(function ($item, $key) use ($data) {
-            $item->tambahan = $data['tambahan']->where('idpemesanan', $item->idpemesanan)->values();
+            });
+
+            return $item;
+        });
+        $data['pemesanan'] = $data['pemesanan']->where('status', '!=', 'Dibatalkan')->map(function ($item, $key) use ($data) {
+            if (array_key_exists($item->idpemesanan, $data['tambahan']->toArray())) {
+                if (array_key_exists($item->idpemesanan, $data['tambahan']->toArray())) {
+                    $item->tambahan = $data['tambahan'][$item->idpemesanan]->values();
+                } else {
+                    $item->tambahan = collect([]);
+                }
+            } else {
+                $item->tambahan = collect([]);
+            }
             $item->tambahantotal = $item->tambahan->sum('jum');
             $item->totalbayar = $data['pembayaran']->where('idpemesanan', $item->idpemesanan)->where('validasi', "Valid")->sum('nominal');
             $item->total = $item->harga + $item->tambahantotal;
@@ -576,30 +649,41 @@ class Controller
         if (isset($Request->tgl)) {
             $data['tgl'] = $Request->tgl;
             if ($Request->jenis == 'bulanan') {
-                $data['pemesanan'] = collect($this->Crud->mysqli2->table('pemesanan')->select()->join('paket', 'paket.idpaket', '=', 'pemesanan.idpaket')->join('user', 'user.iduser', '=', 'pemesanan.iduser')->where(new Ex('month(tgl_pesan)'), $data['tgl'][0])->where(new Ex('year(tgl_pesan)'), $data['tgl'][1])->orWhere(new Ex('month(tgl_acara)'), $data['tgl'][0])->where(new Ex('year(tgl_acara)'), $data['tgl'][1])->get());
+                $data['pemesanan'] = collect($this->Crud->mysqli2->table('pemesanan')->select()->join('paket', 'paket.idpaket', '=', 'pemesanan.idpaket')->join('user', 'user.iduser', '=', 'pemesanan.iduser')->where('akses', 'Pelanggan')->where(new Ex('month(tgl_acara)'), $data['tgl'][0])->where(new Ex('year(tgl_acara)'), $data['tgl'][1])->get());
 
             } else {
-                $data['pemesanan'] = collect($this->Crud->mysqli2->table('pemesanan')->select()->join('paket', 'paket.idpaket', '=', 'pemesanan.idpaket')->join('user', 'user.iduser', '=', 'pemesanan.iduser')->where(new Ex('year(tgl_pesan)'), $data['tgl'][1])->orWhere(new Ex('year(tgl_acara)'), $data['tgl'][1])->get());
-
+                $data['pemesanan'] = collect($this->Crud->mysqli2->table('pemesanan')->select()->join('paket', 'paket.idpaket', '=', 'pemesanan.idpaket')->join('user', 'user.iduser', '=', 'pemesanan.iduser')->where('akses', 'Pelanggan')->where(new Ex('year(tgl_acara)'), $data['tgl'][1])->get());
             }
 
             $data['idpemesanan'] = $data['pemesanan']->pluck('idpemesanan')->toArray();
             $data['pembayaran'] = collect($this->Crud->mysqli2->table('pembayaran')->select()->whereIn('idpemesanan', $data['idpemesanan'])->get());
             $data['tambahan'] = collect($this->Crud->mysqli2->table('tambahan')->select()->join('paket_tambahan', 'paket_tambahan.idpt', '=', 'tambahan.idpt')->whereIn('idpemesanan', $data['idpemesanan'])->get());
-            $data['tambahan'] = $data['tambahan']->groupBy('idpt')->map(function ($item, $key) {
-                $a = $item[0];
-                $a->qty = $item->sum('qty');
-                $a->jum = $item->sum('qty') * $a->harga;
-                return $a;
+            $data['tambahan'] = $data['tambahan']->groupBy('idpemesanan')->map(function ($item, $key) {
+                $item->groupBy('idpt')->map(function ($item) {
+                    $a = $item[0];
+                    $a->qty = $item->sum('qty');
+                    $a->jum = $item->sum('qty') * $a->harga;
+                    return $a;
+
+                });
+
+                return $item;
             });
-            $data['pemesanan'] = $data['pemesanan']->map(function ($item, $key) use ($data) {
-                $item->tambahan = $data['tambahan']->where('idpemesanan', $item->idpemesanan)->values();
+            $data['pemesanan'] = $data['pemesanan']->where('status', '!=', 'Dibatalkan')->map(function ($item, $key) use ($data) {
+                if (array_key_exists($item->idpemesanan, $data['tambahan']->toArray())) {
+                    $item->tambahan = $data['tambahan'][$item->idpemesanan]->values();
+                } else {
+                    $item->tambahan = collect([]);
+                }
                 $item->tambahantotal = $item->tambahan->sum('jum');
                 $item->totalbayar = $data['pembayaran']->where('idpemesanan', $item->idpemesanan)->where('validasi', "Valid")->sum('nominal');
                 $item->total = $item->harga + $item->tambahantotal;
                 $item->sisa = $item->total - $item->totalbayar;
+                $item->bln = date_format(date_create($item->tgl_acara), 'n');
+                $item->year = date_format(date_create($item->tgl_acara), 'Y');
                 return $item;
             });
+
         }
         if (isset($Request->jenis)) {
             if ($Request->jenis == 'Perorang') {
@@ -609,14 +693,23 @@ class Controller
                     $data['idpemesanan'] = $data['pemesanan']->pluck('idpemesanan')->toArray();
                     $data['pembayaran'] = collect($this->Crud->mysqli2->table('pembayaran')->select()->whereIn('idpemesanan', $data['idpemesanan'])->get());
                     $data['tambahan'] = collect($this->Crud->mysqli2->table('tambahan')->select()->join('paket_tambahan', 'paket_tambahan.idpt', '=', 'tambahan.idpt')->whereIn('idpemesanan', $data['idpemesanan'])->get());
-                    $data['tambahan'] = $data['tambahan']->groupBy('idpt')->map(function ($item, $key) {
-                        $a = $item[0];
-                        $a->qty = $item->sum('qty');
-                        $a->jum = $item->sum('qty') * $a->harga;
-                        return $a;
+                    $data['tambahan'] = $data['tambahan']->groupBy('idpemesanan')->map(function ($item, $key) {
+                        $item->groupBy('idpt')->map(function ($item) {
+                            $a = $item[0];
+                            $a->qty = $item->sum('qty');
+                            $a->jum = $item->sum('qty') * $a->harga;
+                            return $a;
+
+                        });
+
+                        return $item;
                     });
                     $data['pemesanan'] = $data['pemesanan']->map(function ($item, $key) use ($data) {
-                        $item->tambahan = $data['tambahan']->where('idpemesanan', $item->idpemesanan)->values();
+                        if (array_key_exists($item->idpemesanan, $data['tambahan']->toArray())) {
+                            $item->tambahan = $data['tambahan'][$item->idpemesanan]->values();
+                        } else {
+                            $item->tambahan = collect([]);
+                        }
                         $item->tambahantotal = $item->tambahan->sum('jum');
                         $item->totalbayar = $data['pembayaran']->where('idpemesanan', $item->idpemesanan)->where('validasi', "Valid")->sum('nominal');
                         $item->total = $item->harga + $item->tambahantotal;
@@ -626,6 +719,16 @@ class Controller
                     $data['pelanggan.key'] = $data['pelanggan']->where('iduser', $Request->pelanggan)->first();
 
                 }
+
+            } elseif ($Request->jenis == 'tahunan') {
+                $data['path'] = 'Laporan/PemesananT1';
+                $bln = array();
+                foreach (Fungsi::$bulan as $v => $k) {
+                    $t = $data['pemesanan']->where('bln', $v);
+                    $x = ['bln' => $k, 'paket' => $t->count(), 'total' => $t->sum('total')];
+                    array_push($bln, $x);
+                }
+                $data['pemesanan'] = collect($bln);
 
             }
         }

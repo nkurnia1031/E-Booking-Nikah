@@ -7,8 +7,21 @@
             <li class="nav-item <?php echo ($data['link'] == 'Home') ? 'active' : ''; ?>">
                 <a class="nav-link" href="?hal=Home"><i class="text-danger fa fa-home"></i> Home <span class="sr-only">(current)</span></a>
             </li>
-            <li class="nav-item <?php echo ($data['link'] == 'Tentang') ? 'active' : ''; ?>">
-                <a class="nav-link" href="?hal=Tentang"><i class="text-danger fa fa-store-alt"></i> Tentang Kami <span class="sr-only">(current)</span></a>
+
+            <li class="nav-item dropdown <?php if (isset($data['induk'])): ?><?php echo ($data['induk'] == 'Informasi') ? 'active' : ''; ?> <?php endif;?>">
+                <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                    <i class="text-danger  fa fa-store-alt"></i> Informasi <span class="sr-only">(current)</span>
+                </a>
+                <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+                    <a class="dropdown-item <?php echo ($data['link'] == 'Tentang') ? 'active' : ''; ?>  " href="?hal=Tentang">Tentang Kami</a>
+                     <?php if (isset($Session['admin'])): ?>
+
+            <?php if ($Session['admin']->akses == 'Pelanggan'): ?>
+                    <a class="dropdown-item <?php echo ($data['link'] == 'Syarat') ? 'active' : ''; ?> " href="?hal=Syarat">Syarat & Ketentuan</a>
+                    <a class="dropdown-item <?php echo ($data['link'] == 'Jadwal') ? 'active' : ''; ?> " href="?hal=Jadwal">Cek Jadwal</a>
+                    <?php endif;?>
+                    <?php endif;?>
+                </div>
             </li>
             <li class="nav-item dropdown <?php if (isset($data['induk'])): ?><?php echo ($data['induk'] == 'Gallery') ? 'active' : ''; ?> <?php endif;?>">
                 <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
@@ -17,6 +30,7 @@
                 <div class="dropdown-menu" aria-labelledby="navbarDropdown">
                     <a class="dropdown-item <?php echo ($data['link'] == 'Gallery&isi=0') ? 'active' : ''; ?>  " href="?hal=Gallery&isi=0">Baju Selayar</a>
                     <a class="dropdown-item <?php echo ($data['link'] == 'Gallery&isi=1') ? 'active' : ''; ?> " href="?hal=Gallery&isi=1">Baju Adat</a>
+                    <a class="dropdown-item <?php echo ($data['link'] == 'Gallery&isi=2') ? 'active' : ''; ?> " href="?hal=Gallery&isi=2">Dekorasi Pelaminan</a>
                 </div>
             </li>
             <li class="nav-item <?php echo ($data['link'] == 'Tentang') ? 'active' : ''; ?>">

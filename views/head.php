@@ -11,6 +11,7 @@
     <link rel="stylesheet" href="dist/css/lightgallery.min.css" />
     <link rel="stylesheet" href="dist/css/lg-transitions.min.css" />
     <link rel="stylesheet" href="dist/css/lg-fb-comment-box.min.css" />
+    <link rel="stylesheet" href="dist/main.min.css" />
 
     <title>
         <?php echo $data['judul']; ?>

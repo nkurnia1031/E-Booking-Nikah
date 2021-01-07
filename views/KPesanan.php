@@ -52,7 +52,6 @@
         </div>
         <div class="card rounded shadow mb-2" style="zoom:85%">
             <h5 class="text-dark ml-2 text-center mt-1 pt-1">Bukti Transfer</h5>
-            <?php if ($Session['admin']->akses == 'Pelanggan'): ?>
             <div class="alert alert-warning" role="alert">
                 <h4 class="alert-heading">Silahkan Upload Bukti Transfer</h4>
                 <p></p>
@@ -69,15 +68,12 @@
                         </div>
                         <div class="form-grup col-12 mb-2 input-group-sm">
                             <label class="form-control-label">No. Rekening Tujuan</label>
-                           <select class="form-control" name="input[]">
-                               <option>BSM | 778 887 7708 | A.n Bunda Tini</option>
-                               <option>BCA | 731 025 2527 | A.n Bunda Tini</option>
-                           </select>
+                          <input type="text" class="form-control" readonly="" name="input[]" value="0309888520 | A.n Mariantini">
                             <input type="hidden" required name="tb[]" value="no_rek">
                         </div>
                         <div class="form-grup col-12 mb-2 input-group-sm">
-                            <label class="form-control-label">Bank Pengirim</label>
-                            <input type="text" required class="form-control" name="input[]">
+                            <label class="form-control-label">Bank</label>
+                            <input type="text" required class="form-control" readonly="" value="BNI" name="input[]">
                             <input type="hidden" name="tb[]" value="bank">
                         </div>
                         <div class="form-grup col-12 mb-2 input-group-sm">
@@ -86,8 +82,10 @@
                                 <div class="input-group-prepend">
                                     <span class="input-group-text" id="basic-addon1">Rp.</span>
                                 </div>
-                                <input type="text" id="uang" required class="form-control uang" onkeyup="$('#uang2').val($('#uang').val().replace(/\./g, ''))">
+                                <?php $cek = $data['pembayaran']->where('validasi', 'Valid')->isEmpty();?>
+                                <input type="text" id="uang" required class="form-control uang" <?php if ($cek): ?>  onchange="cekdp('msgnominal','uang2',<?php echo ($data['tambahan']->sum('jum') + $data['paket']->harga) * 0.3; ?>)" <?php endif;?> onkeyup="$('#uang2').val($('#uang').val().replace(/\./g, ''))">
                             </div>
+                            <span id="msgnominal" class="text-danger"></span>
                             <input type="hidden" name="input[]" id="uang2" value="">
                             <input type="hidden" name="tb[]" value="nominal">
                         </div>
@@ -102,7 +100,7 @@
                                     <input type="radio" required="" name="input[]" value="DP"> DP
                                 </span>
                                 <span class="mx-2">
-                                    <input type="radio" required="" name="input[]" value="Lulas"> Lunas
+                                    <input type="radio" required="" name="input[]" value="Lunas"> Lunas
                                 </span>
                             </div>
                             <input type="hidden" name="tb[]" value="status">
@@ -117,14 +115,11 @@
                     </div>
                 </form>
             </div>
-            <?php endif;?>
             <table class="table table-hover">
                 <thead>
                     <tr>
                         <th>No.</th>
-                        <th>Tujuan</th>
-
-                        <th>Pengirim</th>
+                        <th>Rekening Tujuan</th>
                         <th>Nominal</th>
                         <th>Validasi</th>
                         <th></th>
@@ -137,14 +132,13 @@
                             <?php echo $v + 1; ?>
                         </td>
                           <td>
+                             <div class="text-muted">Bank:
+                                <?php echo $k->bank; ?>
+                            </div>
                             <?php echo $k->no_rek; ?>
 
                         </td>
-                        <td>
-                            <div class="text-muted">Bank:
-                                <?php echo $k->bank; ?>
-                            </div>
-                        </td>
+
                         <td>
                             Rp.
                             <?php echo number_format($k->nominal); ?> <span class="badge badge-danger">
@@ -174,9 +168,11 @@
                     <tr class="">
                         <td colspan="5" class="p-0">
                             <div class="collapse" id="bukti-<?php echo $k->idpembayaran; ?>">
+                                <div class=" d-flex justify-content-center">
                                 <a href="upload/<?php echo $k->url; ?>" download>
-                                    <img src="upload/<?php echo $k->url; ?>" class="img-fluid rounded" alt="Responsive image">
+                                    <img width="200" src="upload/<?php echo $k->url; ?>" class="img-fluid rounded"  alt="Responsive image">
                                 </a>
+                                </div>
                             </div>
                         </td>
                     </tr>
@@ -208,8 +204,7 @@
                                 <small>[
                                     <?php echo $k->idpt; ?>]</small> <strong>
                                     <?php echo $k->nama_pt; ?></strong>
-                                <div class="text-muted"><strong>
-                                        <?php echo $k->ket; ?></strong></div>
+
                             </td>
                             <td>
                                 <?php echo $k->qty; ?>
@@ -265,10 +260,34 @@
                             </th>
                         </tr>
                         <tr>
-                            <th colspan="3">Sisa</th>
-                            <th colspan="3">Rp.
-                                <?php echo number_format($data['tambahan']->sum('jum') + $data['paket']->harga - $data['pembayaran']->where('validasi', 'Valid')->sum('nominal')); ?>
+                            <th colspan="3">Sisa Pembayaran</th>
+                            <?php $g = $data['tambahan']->sum('jum') + $data['paket']->harga - $data['pembayaran']->where('validasi', 'Valid')->sum('nominal');?>
+                            <?php if ($g < 0): ?>
+
+                            <th colspan="3">Rp.0
                             </th>
+                            <?php else: ?>
+                              <th colspan="3">Rp.
+                                <?php echo number_format($g); ?>
+
+                            </th>
+                            <?php endif;?>
+
+                        </tr>
+                        <tr>
+                            <th colspan="3">Kembalian</th>
+                            <?php $g = $data['tambahan']->sum('jum') + $data['paket']->harga - $data['pembayaran']->where('validasi', 'Valid')->sum('nominal');?>
+                            <?php if ($g < 0): ?>
+
+                            <th colspan="3">Rp.
+                                <?php echo number_format(-$g); ?>
+
+                            </th>
+                            <?php else: ?>
+                              <th colspan="3">Rp.0
+
+                            </th>
+                            <?php endif;?>
                         </tr>
                     </tfoot>
                 </table>

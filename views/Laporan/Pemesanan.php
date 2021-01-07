@@ -68,11 +68,12 @@
                                 <thead class="">
                                     <tr>
                                         <th class="w-1">#</th>
-                                        <th class="w-1">ID Pesanan</th>
                                         <?php if ($Request->jenis == 'tahunan'): ?>
                                         <th>Bulan</th>
                                         <?php endif;?>
-                                        <th class="w-1">Paket</th>
+                                        <th class="w-1">Detail Paket</th>
+                                        <th class="w-1">Detail Pesanan</th>
+
                                         <th class="w-1">Jumlah</th>
                                         <?php if ($Request->jenis != 'tahunan'): ?>
 
@@ -90,21 +91,7 @@
                                         <td>
                                             <?php echo $v + 1; ?>
                                         </td>
-                                        <td>
-                                            <?php echo $k->idpemesanan; ?>
-                                            <div class="text-muted">Tanggal Pesan:
-                                                <?php echo $k->tgl_pesan; ?>
-                                            </div>
-                                            <div class="text-muted">
-                                                <strong>Tanggal Acara:
-                                                    <?php echo $k->tgl_acara; ?></strong>
-                                            </div>
-                                            <div class="">
-                                                <strong>Oleh:
-                                                    <?php echo $k->nama; ?> <span class="text-muted">[
-                                                        <?php echo $k->iduser; ?>]</span></strong>
-                                            </div>
-                                        </td>
+
                                         <?php if ($Request->jenis == 'tahunan'): ?>
                                         <td>
                                             <?php echo date_format(date_create($k->tgl_pesan), 'd/m/Y'); ?>
@@ -124,6 +111,25 @@
                                             </ul>
                                         </td>
                                         <td>
+                                            <?php echo $k->idpemesanan; ?>
+                                            <div class="text-muted">Tanggal Pesan:
+                                                <?php echo $k->tgl_pesan; ?>
+                                            </div>
+                                            <div class="text-muted">
+                                                <strong>Tanggal Acara:
+                                                    <?php echo $k->tgl_acara; ?></strong>
+                                            </div>
+                                            <?php if ($Request->jenis != 'Perorang'): ?>
+
+                                            <div class="">
+                                                <strong>Oleh:
+                                                    <?php echo $k->nama; ?> <span class="text-muted">[
+                                                        <?php echo $k->iduser; ?>]</span></strong>
+                                            </div>
+                                            <?php endif;?>
+
+                                        </td>
+                                        <td>
                                             Rp.
                                             <?php echo number_format($k->total); ?>
                                         </td>
@@ -134,8 +140,14 @@
                                             <?php echo number_format($k->totalbayar); ?>
                                         </td>
                                         <td>
+                                            <?php if ($k->sisa < 0): ?>
+                                                 Rp.
+                                            <?php echo number_format(0); ?>
+                                                <?php else: ?>
                                             Rp.
                                             <?php echo number_format($k->sisa); ?>
+                                            <?php endif;?>
+
                                         </td>
                                         <td>
                                             <?php echo $k->status; ?>
@@ -162,9 +174,13 @@
                                         <th colspan="">Rp.
                                             <?php echo number_format($data['pemesanan']->sum('totalbayar')); ?>
                                         </th>
-                                        <th colspan="">Rp.
-                                            <?php echo number_format($data['pemesanan']->sum('sisa')); ?>
-                                        </th>
+                                       <?php if ($data['pemesanan']->sum('sisa') < 0): ?>
+                        <th colspan="">Rp.<?php echo number_format(0); ?></th>
+
+                            <?php else: ?>
+                        <th colspan="">Rp.<?php echo number_format($data['pemesanan']->sum('sisa')); ?></th>
+
+                        <?php endif;?>
                                         <th colspan="">
                                             <?php foreach ($data['pemesanan']->groupBy('status') as $k => $v): ?>
                                             <div>

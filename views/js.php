@@ -8,7 +8,8 @@
 <script src="./mine/jQuery.print.js"> </script>
 <script src="./mine/jquery.mask.min.js"> </script>
 <script src="dist/js/lightgallery-all.min.js"> </script>
-<script src="dist/js/lightgallery-all.min.js"> </script>
+<script src="dist/main.min.js"> </script>
+<script src="dist/locales-all.min.js"> </script>
 <script type="text/javascript">
 $(function() {
     $('[data-toggle="tooltip"]').tooltip()
@@ -61,14 +62,50 @@ $(document).ready(function() {
             }
         }
     });
-   <?php if ($data['link'] == 'Gallery'): ?>
-         $("#relative-caption").lightGallery({
+    <?php if ($data['link'] == 'Gallery'): ?>
+    $("#relative-caption").lightGallery({
         subHtmlSelectorRelative: true
     });
-   <?php endif;?>
+    <?php endif;?>
 
 
 
 
 });
+function cekdp(msg,uang,dp){
+    var nominal =$('#'+uang).val();
+    if (nominal<dp) {
+         let val = (dp / 1).toFixed(2).replace('.', ',');
+            var ys= val.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".")
+        $('#'+msg).html('Batas minimal pembayaran adalah 30% yaitu Rp.'+ys);
+   $('#'+uang).val('');
+
+
+    }else{
+        $('#'+msg).html('');
+
+    }
+
+}
 </script>
+<?php if ($data['link'] == 'Jadwal'): ?>
+
+<script type="text/javascript">
+document.addEventListener('DOMContentLoaded', function() {
+    var calendarEl = document.getElementById('calendar');
+
+    var calendar = new FullCalendar.Calendar(calendarEl, {
+        locale: 'id',
+        headerToolbar: {
+            left: 'prev,next today',
+            center: 'title',
+            right: 'dayGridMonth,timeGridWeek'
+        },
+        initialDate: '<?php echo date('Y-m-d'); ?>',
+        events: <?php echo json_encode($data['jadwal']); ?>
+    });
+
+    calendar.render();
+});
+</script>
+<?php endif;?>
